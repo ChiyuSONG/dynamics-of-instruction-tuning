@@ -28,7 +28,7 @@ git clone https://huggingface.co/datasets/ChiyuSONG/dynamics-of-instruction-tuni
 ```bash
 # choices for data_type:
 # ["curated-10", "curated-40", "curated-160", "curated-640", "curated-2560", "curated-10000","synthetic-10", "synthetic-40", "synthetic-160", "synthetic-640", "synthetic-2560", "synthetic-10000","synthetic-40960", "baseline", "reconstruct", "maximum", "mix-0", "mix-2560", "mix-40960"]
-bash run_train.sh --data_type curated-160 --model_size 7b --model_name_or_path **path_to_foundation_model** --batch_size 8 --gradient_accumulation 1
+bash run_train.sh --data_type **the_setting_you_chose** --model_size 7b --model_name_or_path **path_to_foundation_model** --batch_size 8 --gradient_accumulation 1
 ```
     Training logs and model checkpoints will be saved in "\runs".
 
