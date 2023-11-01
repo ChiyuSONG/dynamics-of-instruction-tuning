@@ -1,0 +1,16 @@
+*.pyc
+*.gz
+*.log
+*.out
+*.txt
+*.json
+*.doc
+*.docx
+*.png
+*.zip
+.idea/*
+runs/*
+data/*
+!requirements.txt
+!.gitkeep
+!configs/*

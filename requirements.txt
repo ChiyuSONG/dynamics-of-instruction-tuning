@@ -1,0 +1,15 @@
+accelerate==0.20.3
+datasets
+deepspeed==0.9.5
+jsonlines
+matplotlib==3.7.3
+numpy
+pandas==1.5.3
+safetensors==0.3.1
+scipy==1.10.1
+sentencepiece==0.1.99
+tensor-parallel==2.0.0
+tokenizers==0.13.3
+tqdm
+transformers==4.30.2
+xformers==0.0.21
