@@ -54,6 +54,15 @@ python evaluate/plot.py --plot_type # choices=["overall", "curated_vs_synthetic-
 ```
     The plotted graphs will be saved in "evaluate/plots".
 
+### Evaluate models on two public benchmarks:
+
+1. Get the dataset from the official repository of [CMMLU](https://github.com/haonan-li/CMMLU/tree/master/data) and [AGIEval](https://github.com/ruixiangcui/AGIEval/tree/main/data) and move their contents to "evaluate/cmmlu/data" and "evaluate/agieval/data" respectively.
+
+2. Calculate the scores in zero-shot and few-shot setting.
+```bash
+bash evaluate/cmmlu/llama_7b.sh 0 MODEL_NAME_OR_PATH SAVE_TAG
+bash evaluate/agieval/llama_7b.sh 0 MODEL_NAME_OR_PATH SAVE_TAG
+```
 
 ## Citation
 ```

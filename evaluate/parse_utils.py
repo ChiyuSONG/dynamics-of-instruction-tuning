@@ -12,7 +12,6 @@ multi_choices_tasks = ['ethics_choose']
 single_cloze_zh_tasks = ['chinese_cloze']
 tf_tasks = ['history_tf']
 math_tasks = ['math']
-# task_mapping = {"biology_choose": "biology","chinese_choose": "chinese","chinese_cloze": "chinese","history_choose": "history","history_tf": "history"}
 
 def extract_last_line(string):
     lines = string.split('\n')
@@ -34,15 +33,15 @@ def parse_four_choices_candidates_tasks(answer, pred_logits, choice_parse_mode, 
     letter_set = {"A", "B", "C", "D"}
     answer = answer.strip()
     if (len(answer)!=1 and choice_parse_mode == 'both') or choice_parse_mode == 'logits':
-        pred_logits = torch.tensor(pred_logits)
-        pred_logits = pred_logits.flatten()
+        pred_logits = torch.tensor(pred_logits).flatten()
         for letter in letter_set:
-            assert len(tokenizer.encode("A",add_special_tokens=False))==1
+            assert len(tokenizer.encode(letter, add_special_tokens=False))==1
         probs = (
             torch.nn.functional.softmax(
                 torch.tensor(
                     [
-                        pred_logits[tokenizer.encode("A",add_special_tokens=False)[0]], # some tokens like '▁A' should have been taken into account when computing the logits of 'A', but we ignored it here since it will vary with tokenizer.
+                        pred_logits[tokenizer.encode("A",add_special_tokens=False)[0]], 
+                        # some tokens like '▁A' should have been taken into account when computing the logits of 'A', but we ignored it here since it will vary with tokenizer.
                         pred_logits[tokenizer.encode("B",add_special_tokens=False)[0]],
                         pred_logits[tokenizer.encode("C",add_special_tokens=False)[0]],
                         pred_logits[tokenizer.encode("D",add_special_tokens=False)[0]],
@@ -82,6 +81,8 @@ def parse_tf_choice(answer, pred_logits, tf_parse_mode, tokenizer):
             token_list.append(tokenizer.encode(test_text,add_special_tokens=False)[0])
         if len(token_list)==6 and len(set(token_list))==1:
             start_token_zh = token_list[0]
+        
+        # calculate the scores
         for t,f in zip(true_set, false_set):
             tokenize_t = tokenizer.encode(t)
             tokenize_f = tokenizer.encode(f)           
@@ -89,13 +90,13 @@ def parse_tf_choice(answer, pred_logits, tf_parse_mode, tokenizer):
                 ture_logits+=pred_logits[tokenize_t[0]]
                 false_logits+=pred_logits[tokenize_f[0]]
             elif len(tokenize_t)==2 and len(tokenize_f)==2 and tokenize_t[0]==start_token_zh and tokenize_f[0]==start_token_zh:
-                ture_logits+=pred_logits[tokenize_t[0]]
-                false_logits+=pred_logits[tokenize_f[0]]               
+                ture_logits+=pred_logits[tokenize_t[1]]
+                false_logits+=pred_logits[tokenize_f[1]]               
         
         probs = (torch.nn.functional.softmax(torch.tensor([ture_logits,false_logits]),dim=0,).detach().cpu().numpy())
         pred = {0: "T", 1: "F"}[np.argmax(probs)]
 
-
+    # We prioritize the results of regularization
     if len(true_set_search)>0 and len(false_set_search)==0:
         answer = 'T'
     elif len(false_set_search)>0 and len(true_set_search)==0:
@@ -116,7 +117,7 @@ def parse_single_cloze_zh(answer):
         return answer
 
 def parse_math_tasks(raw_string):
-    # if the "raw_string" is "\\boxed{x + y = z}", it will be processed into "z"
+    # If the "raw_string" is "\\boxed{x + y = z}", it will be processed into "z"
     def remove_boxed(s):
         if "\\fbox" in s:
             left = "\\boxed{"
@@ -132,9 +133,9 @@ def parse_math_tasks(raw_string):
         except:
             return None
 
-    # if there are many "\\boxed{" in the "string", only the last one will be extracted (the use of "rfind").
-    # if "\\boxed{" can't be found, then try to find "\\fbox"
-    # the number of "{" and "}" must match with each other
+    # If there are many "\\boxed{" in the "string", only the last one will be extracted (the use of "rfind").
+    # If "\\boxed{" can't be found, then try to find "\\fbox"
+    # The number of "{" and "}" must match with each other
     def last_boxed_only_string(string):
         idx = string.rfind("\\boxed")
         if idx < 0:
@@ -161,7 +162,7 @@ def parse_math_tasks(raw_string):
 
         return retval
 
-    #  find the anwser in the last part whose pattern is "\$(.*)\$", only the last one will be extracted
+    #  Find the answer in the last part whose pattern is "\$(.*)\$", only the last one will be extracted
     def get_answer_with_dollar_sign(s):
         first_pattern = "\$(.*)\$"
         last_match = None
@@ -172,8 +173,9 @@ def parse_math_tasks(raw_string):
                 last_match = last_match.split("=")[-1].lstrip(" ")
         return last_match
 
-    # if we can't find "\\boxed" or a pattern like "\$(.*)\$", we will firstly find "=" directly,
-    # if we still can't find "=", we will just find a number which can start with "$"("$" won't be included in the final result) and can have fraction, but it can't be followed with some other text. Only the last one will be extracted
+    # If we can't find "\\boxed" or a pattern like "\$(.*)\$", we will firstly look for "=" directly,
+    # If we still can't find "=", we will just find a number which starts with "$"("$" won't be included in the final result)
+    # and can have fraction, but it can't be followed with some other text. Only the last one will be extracted
     def get_answer_without_dollar_sign(s):
         last_match = None
         if "=" in s:
@@ -188,7 +190,7 @@ def parse_math_tasks(raw_string):
                 last_match = last_match.strip('$')
         return last_match
 
-    # some special case for our dataset is considered here
+    # Some special case for our dataset is considered here
     def get_answer_special_case(s):
         s = s.strip()
         s_ori = s
@@ -210,7 +212,7 @@ def parse_math_tasks(raw_string):
         return None
     
     def poset_process_special_case(s):
-        # for the situation: {'anwser': '\\frac{3}{4}, -\\frac{3}{4}', 'output': '答案\n$\\frac{3}{4}$或$-\\frac{3}{4}$', 'parse': '\\frac{3}{4}$或$-\\frac{3}{4}'}
+        # For the situation: {'answer': '\\frac{3}{4}, -\\frac{3}{4}', 'output': '答案\n$\\frac{3}{4}$或$-\\frac{3}{4}$', 'parse': '\\frac{3}{4}$或$-\\frac{3}{4}'}
         if '或' in s:
             s = s.replace('或',', ')
         if '$' in s:
@@ -220,7 +222,7 @@ def parse_math_tasks(raw_string):
     if "答案" in raw_string:
         raw_string = (raw_string.split('答案')[-1]).strip()
 
-    # if "\\boxed" in raw_string and "\\fbox" not in raw_string, last_boxed will be None
+    # If "\\boxed" in raw_string and "\\fbox" not in raw_string, last_boxed will be None
     last_boxed = last_boxed_only_string(raw_string)
     
     if last_boxed is not None:
@@ -235,7 +237,7 @@ def parse_math_tasks(raw_string):
         answer = poset_process_special_case(answer)
     return answer
 
-# parse the output
+# Parse the output
 def post_process_single_sample(prediction, dataset_name, pred_logits, choice_parse_mode, tokenizer, tf_parse_mode='text'):
     if dataset_name in single_choice_tasks:
         answer = parse_four_choices_candidates_tasks(prediction, pred_logits, choice_parse_mode, tokenizer)
@@ -256,8 +258,7 @@ def post_process_single_sample(prediction, dataset_name, pred_logits, choice_par
   
     return answer
 
-
-def evaluate_single_sample(dataset_name, prediction, label, label_content=None, verbose=False): # "label_content" is the parameter set for the single_choice task where each choice like "A" will have its corresponding specific content
+def evaluate_single_sample(dataset_name, prediction, label, label_content=None, verbose=False):
     if dataset_name in math_tasks:
         return is_equiv(prediction, label, verbose)
     if label_content is None:
