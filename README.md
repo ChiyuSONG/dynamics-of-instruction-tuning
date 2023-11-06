@@ -1,12 +1,13 @@
-# Dynamics of Instruction Tuning: Each Ability of Large Language Models Has Its Own Growth Pace (WIP)
+# Dynamics of Instruction Tuning: Each Ability of Large Language Models Has Its Own Growth Pace
 
 This [paper](https://arxiv.org/abs/2310.19651) investigated how the underlying abilities of Large Language Models (LLMs), such as creative writing, code generation, and logical reasoning, develop at varying paces during instruction tuning. We systematically studied the effects of data volume, parameter size (7b-33b), and data construction methods on the growth of each ability.
 
 - The codebase and commands are provided to reproduce our experimental results.
 - The human-curated dataset for training and evaluation can be found [here](https://huggingface.co/datasets/ChiyuSONG/dynamics-of-instruction-tuning).
+- We further validate the efficacy of our data construction on other foundation models such as Baichuan2-13B-Base. The deployable model checkpoints can be found [here](https://github.com/ChiyuSONG/data-efficient-training-of-LLMs).
 
 <p align="center" width="100%">
-      <img src="img/way_to_agi.jpg" alt="Each ability of LLMs has its own growth pace during instruction tuning." style="width: 50%; min-width: 200px; display: block; margin: auto;">
+      <img src="img/way_to_agi.jpg" alt="Each ability of LLMs has its own growth pace during instruction tuning." style="width: 56%; min-width: 200px; display: block; margin: auto;">
 </p>
 
 ## Dependencies
@@ -30,7 +31,7 @@ git clone https://huggingface.co/datasets/ChiyuSONG/dynamics-of-instruction-tuni
 # ["curated-10", "curated-40", "curated-160", "curated-640", "curated-2560", "curated-10000","synthetic-10", "synthetic-40", "synthetic-160", "synthetic-640", "synthetic-2560", "synthetic-10000","synthetic-40960", "baseline", "reconstruct", "maximum", "mix-0", "mix-2560", "mix-40960"]
 bash run_train.sh --data_type **the_setting_you_chose** --model_size 7b --model_name_or_path **path_to_foundation_model** --batch_size 8 --gradient_accumulation 1
 ```
-    Training logs and model checkpoints will be saved in "\runs".
+&nbsp;&nbsp;&nbsp;&nbsp;Training logs and model checkpoints will be saved in "\runs".
 
 ## Evaluation
 ### Evaluate models on human-curated valid/test sets:
@@ -40,19 +41,23 @@ bash run_train.sh --data_type **the_setting_you_chose** --model_size 7b --model_
 export CUDA_VISIBLE_DEVICES=0
 time python -u evaluate/pred.py --model_name_or_path **path_to_saved_checkpoint** --eval_data_path data/curated/valid #or test
 ```
-    The generated answers will be saved in "evaluate/pred-data".
+&nbsp;&nbsp;&nbsp;&nbsp;The generated answers will be saved in "evaluate/pred-data".
+
+<br> 
 
 2. Calculate the scores of various experimental settings on the abilities in the valid or test set:
 ```bash
 time python -u evaluate/scorer.py --pred_data_path evaluate/pred-data/valid #or test
 ```
-    The computed scores will be saved in "evaluate/results".
+&nbsp;&nbsp;&nbsp;&nbsp;The computed scores will be saved in "evaluate/results".
+
+<br> 
 
 3. Plot the graphs as shown in Section 4.3 of the paper.
 ```bash
 python evaluate/plot.py --plot_type # choices=["overall", "curated_vs_synthetic-13b", "ood", "curated_vs_synthetic-7b"]
 ```
-    The plotted graphs will be saved in "evaluate/plots".
+&nbsp;&nbsp;&nbsp;&nbsp;The plotted graphs will be saved in "evaluate/plots".
 
 ### Evaluate models on two public benchmarks:
 
