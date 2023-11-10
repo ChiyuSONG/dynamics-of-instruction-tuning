@@ -68,7 +68,7 @@ class Assistant:
         data_collator = DataCollatorForSupervisedDataset(tokenizer=self.tokenizer, pad_to_multiple_of=8)
         inputs = data_collator(processed)
         for key in inputs:
-            inputs[key].to("cuda")
+            inputs[key] = inputs[key].to("cuda")
         outputs = self.model.generate(
             **inputs,
             generation_config = self.config
