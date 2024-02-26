@@ -74,19 +74,10 @@ bash evaluate/agieval/llama_7b.sh 0 MODEL_NAME_OR_PATH SAVE_TAG
       
 ## Citation
 ```
-@ARTICLE{2023arXiv231019651S,
-       author = {{Song}, Chiyu and {Zhou}, Zhanchao and {Yan}, Jianhao and {Fei}, Yuejiao and {Lan}, Zhenzhong and {Zhang}, Yue},
-        title = "{Dynamics of Instruction Tuning: Each Ability of Large Language Models Has Its Own Growth Pace}",
-      journal = {arXiv e-prints},
-     keywords = {Computer Science - Computation and Language},
-         year = 2023,
-        month = oct,
-          eid = {arXiv:2310.19651},
-        pages = {arXiv:2310.19651},
-archivePrefix = {arXiv},
-       eprint = {2310.19651},
- primaryClass = {cs.CL},
-       adsurl = {https://ui.adsabs.harvard.edu/abs/2023arXiv231019651S},
-      adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+@article{song2023dynamics,
+  title={Dynamics of Instruction Tuning: Each Ability of Large Language Models Has Its Own Growth Pace},
+  author={Song, Chiyu and Zhou, Zhanchao and Yan, Jianhao and Fei, Yuejiao and Lan, Zhenzhong and Zhang, Yue},
+  journal={arXiv preprint arXiv:2310.19651},
+  year={2023}
 }
 ```
