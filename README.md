@@ -3,7 +3,7 @@
 This [paper](https://arxiv.org/abs/2310.19651) investigated how the underlying abilities of Large Language Models (LLMs), such as creative writing, code generation, and logical reasoning, develop at varying paces during instruction tuning. We systematically studied the effects of data volume, parameter size (7b-33b), and data construction methods on the growth of each ability.
 
 - The codebase and commands are provided to reproduce our experimental results.
-- The human-curated dataset for training and evaluation can be found [here](https://huggingface.co/datasets/ChiyuSONG/dynamics-of-instruction-tuning).
+- The human-curated dataset, *DoIT*, for training and evaluation can be found [here](https://huggingface.co/datasets/ChiyuSONG/dynamics-of-instruction-tuning).
 - We further validate the efficacy of our data construction on other foundation models such as Baichuan2. The deployable model checkpoints can be found in this [repo](https://github.com/ChiyuSONG/data-efficient-training-of-LLMs). :grin:**Have Fun!**
 
 <p align="center" width="100%">
@@ -17,7 +17,7 @@ pip install -r requirements.txt
 ```
 
 ## Training
-1. Get the dataset and move its content to "data/":
+1. Get the *DoIT* dataset and move its content to "data/":
 ```bash
 git clone https://huggingface.co/datasets/ChiyuSONG/dynamics-of-instruction-tuning
 ```
