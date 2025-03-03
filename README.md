@@ -1,10 +1,9 @@
-# Dynamics of Instruction Tuning: Each Ability of Large Language Models Has Its Own Growth Pace
+# Dynamics of Instruction Fine-Tuning for Chinese Large Language Models
 
-This [paper](https://arxiv.org/abs/2310.19651) investigated how the underlying abilities of Large Language Models (LLMs), such as creative writing, code generation, and logical reasoning, develop at varying paces during instruction tuning. We systematically studied the effects of data volume, parameter size (7b-33b), and data construction methods on the growth of each ability.
+This [paper](https://arxiv.org/abs/2310.19651) explored how data quantity, model size, and data construction methods affect the development of different abilities in Chinese large language models using a new dataset called *DoIT*. We found that abilities respond differently to scaling factors and identified two key features—Complexity and Transference—that predict ability growth. This insight helps optimize training strategies and improve model performance on different benchmarks.
 
 - The codebase and commands are provided to reproduce our experimental results.
 - The human-curated dataset, *DoIT*, for training and evaluation can be found [here](https://huggingface.co/datasets/ChiyuSONG/dynamics-of-instruction-tuning).
-- We further validate the efficacy of our data construction on other foundation models such as Baichuan2. The deployable model checkpoints can be found in this [repo](https://github.com/ChiyuSONG/data-efficient-training-of-LLMs). :grin:**Have Fun!**
 
 <p align="center" width="100%">
       <img src="img/way_to_agi.jpg" alt="Each ability of LLMs has its own growth pace during instruction tuning." style="width: 56%; min-width: 200px; display: block; margin: auto;">
@@ -74,10 +73,11 @@ bash evaluate/agieval/llama_7b.sh 0 MODEL_NAME_OR_PATH SAVE_TAG
       
 ## Citation
 ```
-@article{song2023dynamics,
-  title={Dynamics of Instruction Tuning: Each Ability of Large Language Models Has Its Own Growth Pace},
+@inproceedings{song2025dynamics,
+  title={Dynamics of Instruction Fine-Tuning for Chinese Large Language Models},
   author={Song, Chiyu and Zhou, Zhanchao and Yan, Jianhao and Fei, Yuejiao and Lan, Zhenzhong and Zhang, Yue},
-  journal={arXiv preprint arXiv:2310.19651},
-  year={2023}
+  booktitle={Proceedings of the 31st International Conference on Computational Linguistics},
+  pages={10345--10366},
+  year={2025}
 }
 ```
